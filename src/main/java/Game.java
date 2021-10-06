@@ -15,6 +15,7 @@ public class Game {
     private Character direction = ' ';
     private String currentRoom;
     private Dungeon dungeon;
+    private List<String> roomNames = new ArrayList<>();
 
     public void start() {
 
@@ -26,8 +27,16 @@ public class Game {
         System.out.print("\nWhich room do you want to start in? Your options:\n");
         for (Room room : roomList) {
             System.out.print(room.getSource() + ' ');
+            roomNames.add(room.getSource());
         }
+
         currentRoom = scanner.nextLine();
+        if(!roomNames.contains(currentRoom)){
+            System.out.println("You choose wrong number of room");
+            int random = (int)(Math.random()*roomNames.size()+1);
+            currentRoom = roomNames.get(random);
+        }
+
         System.out.println("You have been started in room \033[0;92m" + currentRoom + "\033[0m");
 
         while (!direction.equals('q')) {
