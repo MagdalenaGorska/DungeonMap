@@ -59,6 +59,7 @@ public class Game {
 
             if (direction.equals('n') || direction.equals('s') || direction.equals('w') || direction.equals('e')) {
                 currentRoomObj = dungeon.move(selectedRoom, direction);
+                selectedRoom=currentRoomObj.getSource();
                 if (currentRoomObj == null) {
                     System.out.println("Not found obj");
                     continue;
