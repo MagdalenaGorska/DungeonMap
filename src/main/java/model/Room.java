@@ -3,6 +3,7 @@ package model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,13 +14,18 @@ import java.util.Map;
 public class Room {
     private String source;
     private Map<Character, String> directionAndDestination;
+    @Setter
+    private boolean isActive;
 
-    public Room(String source){
-        this.source=source;
+    public Room(String source) {
+        this.source = source;
         this.directionAndDestination = new HashMap();
     }
 
-    public void addPath(Character direction, String destination){
+
+    public void addPath(Character direction, String destination) {
         directionAndDestination.put(direction, destination);
     }
+
+
 }
