@@ -1,0 +1,5 @@
+a0 e:a7
+a1 s:a3 w:a7
+a2 n:a7 e:a3
+a3 n:a1 w:a2
+a7 s:a2 w:a0 e:a1
