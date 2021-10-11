@@ -20,6 +20,7 @@ public class Room {
     public Room(String source) {
         this.source = source;
         this.directionAndDestination = new HashMap();
+        this.isActive = false;
     }
 
 
@@ -29,3 +30,4 @@ public class Room {
 
 
 }
+

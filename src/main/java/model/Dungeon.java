@@ -1,6 +1,7 @@
 package model;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,38 +13,27 @@ public class Dungeon {
         this.listOfPath = listOfPath;
     }
 
-    /*
-        public String move(String currentPosition, char direction) {
-            for (Room path : listOfPath) {
-                if (path.getSource().equals(currentPosition) && path.getDirectionAndDestination().keySet().contains(direction))
-                    return path.getDirectionAndDestination().get(direction);
-            }
-            System.out.println("Wrong direction. You have to stay in the same room.");
-            return currentPosition;
-        }
-    */
-
-    public Room move(String currentPosition, char direction) {
+    public Optional<Room> move(Optional<Room> currentPosition, char direction) {
         for (Room path : listOfPath) {
-            if (path.getSource().equals(currentPosition) && path.getDirectionAndDestination().keySet().contains(direction)) {
+            if (path.getSource().equals(currentPosition.get().getSource()) && path.getDirectionAndDestination().keySet().contains(direction)) {
                 String sourceNextRoom = path.getDirectionAndDestination().get(direction);
                 return findRoomObj(sourceNextRoom);
             }
         }
         System.out.println("Wrong direction. You have to stay in the same room.");
-        return null;
+        return currentPosition;
     }
 
-    public Room findRoomObj(String name) {
+    public Optional<Room> findRoomObj(String name) {
         if (listOfPath == null) {
-            return null;
+            return Optional.empty();
         }
-        for (var object : listOfPath) {
-            if (object.getSource().equals(name)) {
-                return object;
+        for (Room room : listOfPath) {
+            if (room.getSource().equals(name)) {
+                return Optional.of(room);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
 

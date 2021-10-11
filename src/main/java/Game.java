@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Game {
@@ -13,7 +14,7 @@ public class Game {
     private static List<Room> roomList;
     private Scanner scanner;
     private Character direction = ' ';
-    private Room currentRoomObj;
+    private Optional<Room> currentRoomObj;
     private Dungeon dungeon;
 
 
@@ -29,45 +30,44 @@ public class Game {
             System.out.print(room.getSource() + ' ');
         }
 
-        String selectedRoom = scanner.nextLine();
+        String startRoom = scanner.nextLine();
+        currentRoomObj = dungeon.findRoomObj(startRoom);
 
-        if (currentRoomObj != null) {
-            currentRoomObj.setActive(false);
-        }
-
-        currentRoomObj = dungeon.findRoomObj(selectedRoom);
-
-        if (currentRoomObj == null) {
-            System.out.println("You choose wrong number of room");
-            int random = (int) (Math.random() * roomList.size() + 1);
-            currentRoomObj = roomList.get(random);
-        }
-        currentRoomObj.setActive(true);
-        dungeon.printRoomsStruct();
-        //currentRoomObj = roomList.get();
-
-        System.out.println("You have been started in room \033[0;92m" + currentRoomObj.getSource() + "\033[0m");
+        getRandomRoom();
 
 
         while (!direction.equals('q')) {
-            System.out.print("Which direction do you want to move? " + dungeon.getDirectionsForRoom(currentRoomObj.getSource()) + " ? Enter 'q' to finish ");
-            direction = scanner.nextLine().charAt(0);
-
-            if (currentRoomObj != null) {
-                currentRoomObj.setActive(false);
+            if (currentRoomObj.isPresent()) {
+                dungeon.printRoomsStruct();
+                System.out.println("You are currently in the room \033[0;96m" + currentRoomObj.get().getSource() + "\033[0m");
+            } else {
+                System.out.println("Not found obj");
+                continue;
             }
+
+            setDirection();
 
             if (direction.equals('n') || direction.equals('s') || direction.equals('w') || direction.equals('e')) {
-                currentRoomObj = dungeon.move(selectedRoom, direction);
-                selectedRoom=currentRoomObj.getSource();
-                if (currentRoomObj == null) {
-                    System.out.println("Not found obj");
-                    continue;
-                }
-                currentRoomObj.setActive(true);
-                dungeon.printRoomsStruct();
-                System.out.println("You are currently in the room \033[0;96m" + currentRoomObj.getSource() + "\033[0m");
+                currentRoomObj.get().setActive(false);
+                currentRoomObj = dungeon.move(currentRoomObj, direction);
+                currentRoomObj.get().setActive(true);
             }
+        }
+    }
+
+    private void setDirection() {
+        if (currentRoomObj.isPresent()) {
+            System.out.print("Which direction do you want to move? " + dungeon.getDirectionsForRoom(currentRoomObj.get().getSource()) + " ? Enter 'q' to finish ");
+            direction = scanner.nextLine().charAt(0);
+        }
+    }
+
+    private void getRandomRoom() {
+        if (currentRoomObj.isEmpty()) {
+            System.out.println("You choose wrong number of room");
+            int random = (int) (Math.random() * roomList.size() + 1);
+            Room randomRoom = roomList.get(random);
+            currentRoomObj = Optional.ofNullable(randomRoom);
         }
     }
 
@@ -87,7 +87,6 @@ public class Game {
                     room.addPath(directionAndDestination[0].charAt(0), directionAndDestination[1]);
                 }
                 roomList.add(room);
-                //System.out.println("Adding room");
 
             }
         } catch (IOException e) {
